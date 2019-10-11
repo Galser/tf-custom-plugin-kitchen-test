@@ -1,8 +1,9 @@
 # tf-custom-plugin-kitchen-test
 TF : Using custom plugin + kitchen test of it
+Based on : https://github.com/Galser/tf-custom-plugin
 
 # Purpose
-This repository provides demo code for running Terraform in Vagrant environment with custom plugin with KitchCI tests
+This repository provides demo code for running Terraform in Vagrant environment with custom plugin with KitchenCI tests
 
 # Requirements
 
@@ -32,11 +33,6 @@ git clone https://github.com/Galser/tf-custom-plugin-kitchen-test.git
 
 
 # TODO
-- [ ] Setup a Vagrantfile that installs golang
-- [ ] Create a sample project, ie null provider
-- [ ] Compile a custom plugin
-- [ ] Copy the custom plugin to the required path
-- [ ] Update main.tf to use the custom plugin
 - [ ] Test it works.
 - [ ] Setup KitchenCI
 - [ ] Create test
@@ -45,6 +41,11 @@ git clone https://github.com/Galser/tf-custom-plugin-kitchen-test.git
 
 
 # DONE
+- [ ] Setup a Vagrantfile that installs golang
+- [ ] Create a sample project, ie null provider
+- [ ] Compile a custom plugin
+- [ ] Copy the custom plugin to the required path
+- [ ] Update main.tf to use the custom plugin
 
 
 
