@@ -29,9 +29,9 @@ git clone https://github.com/Galser/tf-custom-plugin-kitchen-test.git
     ```
     make
     ```
-    > Note : This will utilize [Makefile](Makefile) with all instructions that is prepared in this repo. Generally in the modern distributions you already have make command by default, if it is missing, you will need to check you OS documentation on the instructions how to install make. Often it will just require simple one or two commands.
+    > Note : This will utilize [Makefile](Makefile) with all instructions that are prepared in this repo. Generally in the modern distributions, you already have make command by default, if it is missing, you will need to check your OS documentation instructions on how to install make. Often it will just require simple one or two commands.
 
-    The process will take quit some time, be patient, the new VM going to be provisioned, GoLang installed, custom plugin compiled and Terraform initialized, then machine late repacked as ready to use box. The output should start with :
+    The process will take quite some time, be patient, the new VM going to be provisioned, GoLang installed, custom plugin compiled and Terraform initialized, then machine later repacked as ready to use box. The output should start with :
     ```
     vagrant validate Vagrantfile 
     Vagrantfile validated successfully.
@@ -39,7 +39,7 @@ git clone https://github.com/Galser/tf-custom-plugin-kitchen-test.git
     Bringing machine 'default' up with 'virtualbox' provider...
     ==> default: Checking if box 'galser/ubuntu-1804-vbox' version '0.0.1' is up to date...
     ```
-    In a 3-4 minutes (depending from your connection and computer CPU power) the last part of the output should be : 
+    In 3-4 minutes (depending on your connection and computer CPU power) the last part of the output should be : 
     ```
     ==> box: Box file was not detected as metadata. Adding it directly...
     ==> box: Adding box 'tfcustom-bionic' (v0) for provider: virtualbox
@@ -89,7 +89,7 @@ git clone https://github.com/Galser/tf-custom-plugin-kitchen-test.git
     Test Summary: 2 successful, 0 failures, 0 skipped
         Finished verifying <default-tfcustom-bionic> (0m1.07s).
     ```       
-    As you can see ,there 2 tests, both passing. First is - there should bne a link to custom plugin,. and link should lead to a specific path.
+    As you can see, there are 2 tests, both passing. First is - there should be a link to custom plugin,. and link should lead to a specific path.
     And the second test is that when we running `terraform apply` with custom plugin the output should much our regular expression. e.g. the last line of output should something like this :
     ```
     external_ip = 77.162.119.9
@@ -239,8 +239,6 @@ Now KitchenCI is ready for usage, you can go back and continue with tests from [
 
 
 # TODO
-- [ ] Update instructions
-
 
 # DONE
 - [x] Setup a Vagrantfile that installs golang
@@ -252,4 +250,4 @@ Now KitchenCI is ready for usage, you can go back and continue with tests from [
 - [x] Setup KitchenCI
 - [x] Create test
 - [x] Run test
-
+- [x] Update instructions
