@@ -1,0 +1,21 @@
+---
+driver:
+  name: vagrant
+#  username: vagrant
+#  password: vagrant
+
+provisioner:
+  name: shell
+
+platforms:
+  - name: tfcustom-bionic
+    driver:
+      box: tfcustom-bionic
+      provider: virtualbox
+
+
+verifier:
+  name: inspec
+
+suites:
+  - name: default

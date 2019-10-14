@@ -1,2 +1,4 @@
 .vagrant
 Gemfile.lock
+.kitchen
+tfcustom-bionic.box

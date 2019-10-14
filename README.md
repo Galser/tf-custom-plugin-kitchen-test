@@ -25,6 +25,132 @@ git clone https://github.com/Galser/tf-custom-plugin-kitchen-test.git
 
 ## How to test 
 
+- In order to test we need to have Vagrant Box with Terraform and custom plugin created and everything that required provisioned. To do it run in command line : 
+```
+make
+```
+*Note : This will utilize [Makefile](Makefile) with all instructions that is prepared in this repo. Generally in the modern distributions you already have make command by default, if it is missing, you will need to check you OS documentation on the instructions how to install make. Often it will just require simple one or two commands.*
+    The process will take quit some time, be patient, the new VM going to be provisioned, GoLang installed, custom plugin compiled nad Terraform initialized, then machine repacked as ready to use box. 
+    The output should start with :
+    ```
+    vagrant validate Vagrantfile 
+    Vagrantfile validated successfully.
+    vagrant up
+    Bringing machine 'default' up with 'virtualbox' provider...
+    ==> default: Checking if box 'galser/ubuntu-1804-vbox' version '0.0.1' is up to date...
+    ```
+    In a 3-4 minutes (depending from your connection and computer CPU power) the last part of the output should be : 
+    ```
+    ==> box: Box file was not detected as metadata. Adding it directly...
+    ==> box: Adding box 'tfcustom-bionic' (v0) for provider: virtualbox
+        box: Unpacking necessary files from: file:///Users/.../tf-custom-plugin-kitchen-test/tfcustom-bionic.box
+    ==> box: Successfully added box 'tfcustom-bionic' (v0) for 'virtualbox'!
+    ```
+    And that means that we have now image of VM to power-up.
+- To prepare tests (run the VM), execute :
+    ```
+    bundle exec kitchen converge
+    ```
+    Output going to start with :
+    ```
+    -----> Starting Kitchen (v2.3.3)
+    -----> Creating <default-tfcustom-bionic>...
+        Bringing machine 'default' up with 'virtualbox' provider...
+    ==> default: Importing base box 'tfcustom-bionic'...
+    ==> default: Matching MAC address for NAT networking...
+    ```
+    and should end with : 
+    ```
+        Downloading files from <default-tfcustom-bionic>
+        Finished converging <default-tfcustom-bionic> (0m0.01s).
+    -----> Kitchen is finished. (0m48.37s)
+    ```
+- Now to run the test execute : 
+    ```
+    bundle exec kitchen verify
+    ```
+    Output should looks like ths : 
+    ```
+    bundle exec kitchen verify
+    -----> Starting Kitchen (v2.3.3)
+    -----> Verifying <default-tfcustom-bionic>...
+    verify_host_key: false is deprecated, use :never
+        Loaded tests from {:path=>".Users.andrii.labs.skills.tf-custom-plugin-kitchen-test.test.integration.default"} 
+
+    Profile: tests from {:path=>"/Users/.../tf-custom-plugin-kitchen-test/test/integration/default"} (tests from {:path=>".Users.andrii.labs.skills.tf-custom-plugin-kitchen-test.test.integration.default"})
+    Version: (not specified)
+    Target:  ssh://vagrant@127.0.0.1:2222
+
+    File /home/vagrant/.terraform.d/plugins/terraform-provider-extip
+        ✔  link_path is expected to eq "/home/vagrant/go/bin/terraform-provider-extip"
+    Command: `bash scripts/test_tf.sh`
+        ✔  stdout is expected to match /external_ip = (?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))/
+
+    Test Summary: 2 successful, 0 failures, 0 skipped
+        Finished verifying <default-tfcustom-bionic> (0m1.07s).
+    ```       
+    As you can see ,there 2 tests, both passing. First is - there should bne a link to custom plugin,. and link should lead to a specific path.
+    And the second test is that when we running `terraform apply` with custom plugin the output should much our regular expression. e.g. the last line of output should something like this :
+    ```
+    external_ip = 77.162.119.9
+    ```
+- You can make test fail by editing file [test/integration/default/check_custom_plugin_output.rb](test/integration/default/check_custom_plugin_output.rb). For example let's change 
+**external_ip** to **internal_ip**, now the content of that test control file should look like this : 
+    ```ruby
+    describe command('bash scripts/test_tf.sh') do
+    its('stdout') { should match /internal_ip = (?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))/ }
+    end
+    ```
+- And now let's re-run our tests : 
+    ```
+    bundle exec kitchen verify
+    ```
+    Output should looks like ths : 
+    ```
+    -----> Starting Kitchen (v2.3.3)
+    -----> Verifying <default-tfcustom-bionic>...
+    verify_host_key: false is deprecated, use :never
+        Loaded tests from {:path=>".Users.andrii.labs.skills.tf-custom-plugin-kitchen-test.test.integration.default"} 
+
+    Profile: tests from {:path=>"/Users/.../tf-custom-plugin-kitchen-test/test/integration/default"} (tests from {:path=>".Users.andrii.labs.skills.tf-custom-plugin-kitchen-test.test.integration.default"})
+    Version: (not specified)
+    Target:  ssh://vagrant@127.0.0.1:2222
+
+    File /home/vagrant/.terraform.d/plugins/terraform-provider-extip
+        ✔  link_path is expected to eq "/home/vagrant/go/bin/terraform-provider-extip"
+    Command: `bash scripts/test_tf.sh`
+        ×  stdout is expected to match /internal_ip = (?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))/
+        expected "\e[0m\e[1mnull_resource.example: Refreshing state... (ID: 3806188658547787759)\e[0m\n\e[0m\e[1mdata....ded, 0 changed, 0 destroyed.\e[0m\n\e[0m\e[1m\e[32m\nOutputs:\n\nexternal_ip = 77.162.119.95\e[0m\n" to match /internal_ip = (?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))/
+        Diff:
+        @@ -1,2 +1,9 @@
+        -/internal_ip = (?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))/
+        +null_resource.example: Refreshing state... (ID: 3806188658547787759)
+        +data.extip.external_ip: Refreshing state...
+        +
+        +Apply complete! Resources: 0 added, 0 changed, 0 destroyed.
+        +
+        +Outputs:
+        +
+        +external_ip = 77.162.119.95
+        Test Summary: 1 successful, 1 failure, 0 skipped
+    ```
+    Well, this time first test is passing, but the test of the actual plugin output fails as we expecting it to be **"internal_ip = 77.162.119.95"** and the output that passes the value from plugin has **"external_ip"**.
+- Whne you've done with tests - to destroy the VM and free resources, run "
+    ```
+    bundle exec kitchen destroy
+    ```
+    Output :
+    ```
+    -----> Starting Kitchen (v2.3.3)
+    -----> Destroying <default-tfcustom-bionic>...
+        ==> default: Forcing shutdown of VM...
+        ==> default: Destroying VM and associated drives...
+        Vagrant instance <default-tfcustom-bionic> destroyed.
+        Finished destroying <default-tfcustom-bionic> (0m4.62s).
+    -----> Kitchen is finished. (0m6.66s)    
+    ```
+This ends up the instructions, thank you. 
+
 
 
 # How to install KitchenCI
