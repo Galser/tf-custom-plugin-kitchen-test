@@ -26,12 +26,12 @@ git clone https://github.com/Galser/tf-custom-plugin-kitchen-test.git
 ## How to test 
 
 - In order to test we need to have Vagrant Box with Terraform and custom plugin created and everything that required provisioned. To do it run in command line : 
-```
-make
-```
-*Note : This will utilize [Makefile](Makefile) with all instructions that is prepared in this repo. Generally in the modern distributions you already have make command by default, if it is missing, you will need to check you OS documentation on the instructions how to install make. Often it will just require simple one or two commands.*
-    The process will take quit some time, be patient, the new VM going to be provisioned, GoLang installed, custom plugin compiled nad Terraform initialized, then machine repacked as ready to use box. 
-    The output should start with :
+    ```
+    make
+    ```
+    > Note : This will utilize [Makefile](Makefile) with all instructions that is prepared in this repo. Generally in the modern distributions you already have make command by default, if it is missing, you will need to check you OS documentation on the instructions how to install make. Often it will just require simple one or two commands.
+
+    The process will take quit some time, be patient, the new VM going to be provisioned, GoLang installed, custom plugin compiled and Terraform initialized, then machine late repacked as ready to use box. The output should start with :
     ```
     vagrant validate Vagrantfile 
     Vagrantfile validated successfully.
@@ -239,8 +239,6 @@ Now KitchenCI is ready for usage, you can go back and continue with tests from [
 
 
 # TODO
-- [ ] Create test
-- [ ] Run test
 - [ ] Update instructions
 
 
@@ -252,7 +250,6 @@ Now KitchenCI is ready for usage, you can go back and continue with tests from [
 - [x] Update main.tf to use the custom plugin
 - [x] Test it works.
 - [x] Setup KitchenCI
+- [x] Create test
+- [x] Run test
 
-
-
-# Run logs
