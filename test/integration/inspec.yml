@@ -1,0 +1,12 @@
+name: default
+title: Default Kitchen-Terraform
+version: 0.1.0
+attributes:
+  - name: full_repo_web_path
+    type: string
+    required: true
+    description: Terraform output for repo path
+  - name: repo_description
+    type: string
+    required: true
+    description: Terraform output for repo description 
